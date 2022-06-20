@@ -36,5 +36,17 @@ app.get('/contact', (req, res) => {
   });
 });
 
+//GET Compose
+app.get('/compose', (req, res) => {
+  res.render('compose');
+});
+
+//POST Compose
+app.post('/compose', (req, res) => {
+  let newBlog = req.body.newBlog;
+
+  console.log(newBlog);
+});
+
 //Listen
 app.listen(port, () => console.log(`The server is online on the port ${port}`));
