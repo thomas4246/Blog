@@ -3,4 +3,13 @@
 <h1>Home</h1>
 <p><%= homeStartingContent %></p>
 
+<!--  -->
+<% newBlogs.forEach (newBlog => { %>
+
+<h1><%= newBlog.title %></h1>
+<p><%= newBlog.content %></p>
+
+<% }); %>
+
+<!--Footer -->
 <%- include('partials/footer'); -%>
