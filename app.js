@@ -57,5 +57,17 @@ app.post('/compose', (req, res) => {
   res.redirect('/');
 });
 
+app.get('/posts/:postName', (req, res) => {
+  const newPost = req.params.postName;
+
+  newBlogs.forEach((newBlog) => {
+    const storeTitle = newBlog.title;
+
+    if (newPost === storeTitle) {
+      console.log('Match!');
+    }
+  });
+});
+
 //Listen
 app.listen(port, () => console.log(`The server is online on the port ${port}`));
