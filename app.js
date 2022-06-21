@@ -61,10 +61,16 @@ app.get('/posts/:postName', (req, res) => {
   const newPost = req.params.postName;
 
   newBlogs.forEach((newBlog) => {
-    const storeTitle = newBlog.title;
+    let storeTitle = newBlog.title;
+
+    //Replace spaces with dashes and make all letters lower-case
+    storeTitle = storeTitle.replace(/\s+/g, '-').toLowerCase();
 
     if (newPost === storeTitle) {
-      console.log('Match!');
+      res.render('post', {
+        newTitle: newBlog.title,
+        newContent: newBlog.content,
+      });
     }
   });
 });
