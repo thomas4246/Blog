@@ -64,7 +64,7 @@ app.get('/posts/:postName', (req, res) => {
     let storeTitle = newBlog.title;
 
     //Replace spaces with dashes and make all letters lower-case
-    storeTitle = storeTitle.replace(/\s+/g, '-').toLowerCase();
+    // storeTitle = storeTitle.replace(/\s+/g, '-').toLowerCase();
 
     if (newPost === storeTitle) {
       res.render('post', {
