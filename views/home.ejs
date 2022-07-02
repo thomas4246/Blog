@@ -9,7 +9,7 @@
 <h1><%= newBlog.title %></h1>
 <p>
   <%= newBlog.content.substring(0, 99) + ' ...' %>
-  <a href="/posts/<%=newBlog.title%>">Read More</a>
+  <a href="/posts/<%=newBlog._id%>">Read More</a>
 </p>
 
 <% }); %>

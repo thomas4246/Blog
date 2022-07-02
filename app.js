@@ -1,6 +1,7 @@
 //Imports
 const express = require('express');
 const ejs = require('ejs');
+const mongoose = require('mongoose');
 
 const homeStartingContent =
   'Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.';
@@ -12,7 +13,19 @@ const contactContent =
 const port = process.env.PORT || 3000;
 const app = express();
 
-let newBlogs = [];
+//Mongoose test server
+main().catch((err) => console.log(err));
+
+async function main() {
+  await mongoose.connect('mongodb://localhost:27017/blogDB');
+}
+
+const blogSchema = new mongoose.Schema({
+  title: String,
+  content: String,
+});
+
+const Blog = mongoose.model('Blog', blogSchema);
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
@@ -20,9 +33,13 @@ app.use(express.static('public'));
 
 //GET Home
 app.get('/', (req, res) => {
-  res.render('home', {
-    homeStartingContent: homeStartingContent,
-    newBlogs: newBlogs,
+  Blog.find({}, (err, foundItems) => {
+    if (!err) {
+      res.render('home', {
+        homeStartingContent: homeStartingContent,
+        newBlogs: foundItems,
+      });
+    }
   });
 });
 
@@ -47,31 +64,27 @@ app.get('/compose', (req, res) => {
 
 //POST Compose
 app.post('/compose', (req, res) => {
-  const post = {
-    title: req.body.newTitle,
-    content: req.body.newPost,
-  };
+  const newTitle = req.body.newTitle;
+  const newContent = req.body.newPost;
 
-  newBlogs.push(post);
+  const newBlog = new Blog({
+    title: newTitle,
+    content: newContent,
+  });
+
+  newBlog.save();
 
   res.redirect('/');
 });
-
+//GET dynamic routes
 app.get('/posts/:postName', (req, res) => {
   const newPost = req.params.postName;
 
-  newBlogs.forEach((newBlog) => {
-    let storeTitle = newBlog.title;
-
-    //Replace spaces with dashes and make all letters lower-case
-    // storeTitle = storeTitle.replace(/\s+/g, '-').toLowerCase();
-
-    if (newPost === storeTitle) {
-      res.render('post', {
-        newTitle: newBlog.title,
-        newContent: newBlog.content,
-      });
-    }
+  Blog.findOne({ _id: newPost }, (err, foundBlog) => {
+    res.render('post', {
+      newTitle: foundBlog.title,
+      newContent: foundBlog.content,
+    });
   });
 });
 
